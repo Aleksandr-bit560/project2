@@ -1,19 +1,33 @@
 @Data
 @NoArgsConstructor
 public class UserDto {
+
+    @NotNull
+    @Min(1)
     private Long id;
+
+    @NotBlank
+    @Size(min = 3, max = 50)
     private String name;
+
+    @NotBlank
+    @Email 
     private String email;
+
+    @NotBlank
+    @Size(min = 3, max = 50)
     private String password;
+
+    @NotBlank
     private String role;
 }
 
 public interface UserService {
-    boolean registerUser(UserDto userDto);
-    boolean loginUser(String email, String password);
-    boolean leaveReview(UserDto userDto, String pizza, String review);
-    boolean selectPizza(UserDto userDto, String pizza);
-    boolean updatePizzaAvailability(String pizzaName, boolean isAvailable, UserDto userDto);
+    boolean registerUser(@Valid UserDto userDto);
+    boolean loginUser(@NotBlank String email, @NotBlank String password);
+    boolean leaveReview(@Valid UserDto userDto, @NotBlank String pizza, @NotBlank String review);
+    boolean selectPizza(@Valid UserDto userDto, @NotBlank String pizza);
+    boolean updatePizzaAvailability(@NotBlank String pizzaName, boolean isAvailable, @Valid UserDto userDto);
 }
 
 public interface EmailService {
@@ -23,13 +37,31 @@ public interface EmailService {
 @Data
 @NoArgsConstructor
 public class orderDto {
+
+    @NotNull
     private Long id;
+
+    @NotBlank
     private String customerName;
+
+    @NotBlank
+    @Email
     private String customerEmail;
+
+    @NotEmpty
     private List<PizzaItem> pizzaItems;
+
+    @NotNull
+    @Positive
     private BigDecimal totalAmount;
+
+    @NotNull
     private OrderStatus status;
+
+    @NotNull
     private LocalDateTime createdAt;
+
+    @NotNull
     private LocalDateTime updatedAt;
 }
 
@@ -63,18 +95,40 @@ public interface EmailService {
 
 @Data
 @NoArgsConstructor
+@Validated
 public class PizzaDto {
+
+    @NotNull
     private Long id;
+
+    @NotBlank
+    @Size(min = 3, max = 50)
     private String name;
+
+    @NotNull
+    @Positive
     private BigDecimal price;
+
+    @NotBlank
+    @Size(min = 10, max = 200)
     private String description;
+
+    @NotBlank
+    @Size(min = 10, max = 20)
     private String category;
 }
 
 public interface PizzaService {
     List<PizzaDto> getAllPizzas();
-    PizzaDto getPizzaById(Long id);
-    PizzaDto createPizza(PizzaDto pizza);
-    PizzaDto updatePizza(Long id, PizzaDto pizza);
-    void deletePizza(Long id);
+
+    @NotNull
+    PizzaDto getPizzaById(@NotNull @Positive Long id);
+
+    @NotNull
+    PizzaDto createPizza(@Valid @NotNull PizzaDto pizza);
+
+    @NotNull
+    PizzaDto updatePizza(@NotNull @Positive Long id, @Valid @NotNull PizzaDto pizza);
+
+    void deletePizza(@NotNull @Positive Long id);
 }
